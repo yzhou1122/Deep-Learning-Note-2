@@ -1,3 +1,57 @@
+
+# Gradient Checks
+
+ ## 1. Use centered formula
+
+ Use dual side check for numerical gradient : 
+ $$df(x)\,/\,dx = \frac{f(x+h)- f(x-h)}{ 2h}$$ 
+ where h is commonly set to 1e-5.
+
+ ## 2. Use relative error for the comparison
+
+ Concrectly, let $\,f'_n$ and $\,f'_a$ denote numerical gradient and analytic gradient, respectively. 
+ Use a "ratio" check : 
+ $$\frac{\| f'_a - f'_n \| }{max \,( \|f'_a\| \mathrm{,} \|f'_n\| )}$$
+
+ if error \> 1e-2, usually means gradient is wrong.
+ 1e-2 - 1e-4 : unconfortable.
+ 1e-4 : Ok for objectives wih kinks. Too high for objectives without kinks ( e.g. tanh, softmax).
+ 1e-7 : happy.
+
+ The deeper the network , the higher the relative errors will be.
+
+ ## 3. Use double precision
+
+ ## 4. Stick around active range of floating point.
+
+ if some reason or cases driving your gradient very small ( e.g. normalize loss over batch, when gradients per datapoint are very small, 
+
+ which leads to even smaller ( divided by n ),
+
+ you should scale up temporarilly the loss function by a constant to make sure a nicer range where floats are more dense.
+
+ ## 5. Kinks in the objective.
+
+ kinks refer to non-differentiable part. (e.g. ReLU, when x \< 0, analytic gradient should be zero. However, numberic gradient may be non-zero when $\,f(x+h)$ cross over the kink. Use $max\,(x,y)$ when evaluating $\,f(x+h)$ and then $\,f(x-h)$, if winner changes, then it shows that a kink was crossed.
+
+ Another way to solve it is to use only few datapoints.
+
+ ## 6. Gradcheck in a period of "burn in" time
+
+ Do not do gradcheck on the first iteration, and not on single point but in a period.
+```
+def 
+ ## 7. Turn off regularization, drop out, 
+ ## and augmentation when checking
+ The "regularization loss overwhelm the data loss", thereby masking incorrect grad implementation.
+
+ ## 8. Check only few dimensions
+ .
+
+---
+
+
+
 # Deep-Learning-Note-2
 
 # Setting up your Goal
